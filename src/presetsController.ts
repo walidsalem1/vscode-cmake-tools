@@ -216,6 +216,16 @@ export class PresetsController {
 
         if (this.project.configurePreset) {
             await this.setConfigurePreset(this.project.configurePreset.name);
+        } else {
+            const latestConfigPresetName = this.project.workspaceContext.state.getLatestConfigurePresetName(this.folderName, this.project.isMultiProjectFolder);
+            if (latestConfigPresetName) {
+                // Check if the latest configurePresetName from the before the last preset change is still valid.
+                const presets = await this.getAllConfigurePresets();
+                const latestConfigPreset: preset.ConfigurePreset | undefined = presets.find(preset => preset.name === latestConfigPresetName);
+                if (latestConfigPreset && !latestConfigPreset.hidden) {
+                    await this.setConfigurePreset(latestConfigPresetName);
+                }
+            }
         }
         // Don't need to set build/test presets here since they are reapplied in setConfigurePreset
     }

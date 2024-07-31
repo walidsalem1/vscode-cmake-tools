@@ -40,7 +40,14 @@ export class StateManager {
         return this._get<string>('configurePresetName', folderName, isMultiProject) || null;
     }
 
+    getLatestConfigurePresetName(folderName: string, isMultiProject: boolean): string | null  {
+        return this._get<string>('latest configurePreset', folderName, isMultiProject) || null;
+    }
+
     async setConfigurePresetName(folderName: string, v: string | null, isMultiProject: boolean) {
+        if (v !== null) {
+            await this._update(`latest configurePreset`, v, folderName, isMultiProject);
+        }
         await this._update('configurePresetName', v, folderName, isMultiProject);
     }
 
